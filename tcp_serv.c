@@ -173,7 +173,6 @@ int main(int argc, char* argv[]) {
                 }
 
                 else if (strncmp(msg.buf, "/list", 5) == 0) {
-                    // /list 요청 처리 - 클라이언트에게 IP:PORT 정보 전송
                     printf("Received list request from client %d\n", i + 1);
                     char list_buf[BUF_SIZE] = "[Connected clients]\n";
                     
@@ -181,7 +180,7 @@ int main(int argc, char* argv[]) {
                         if (client[j] != -1) {
                             char client_info[64];
                             
-                            if (client[j] != sockfd) { // /list를 요청한 유저가 아닌 모든 유저
+                            if (client[j] != sockfd) {
                                 snprintf(client_info, sizeof(client_info), "%s:%d(%s)\n", client_ip[j], client_port[j], client_names[j]);
                             }
                             

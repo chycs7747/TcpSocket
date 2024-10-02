@@ -124,7 +124,6 @@ void communicate(int sockfd) {
                 strcpy(msg.buf, "/list");
             }
 
-            // self communication
             else if (strncmp(msg.buf, "/setting", 8) == 0) {
                 setting(&usr);
                 continue;
