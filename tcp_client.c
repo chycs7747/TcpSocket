@@ -62,9 +62,11 @@ void communicate(int sockfd) {
     int maxfd, maxi, nready;
     struct User usr;
     struct Message msg;
-    int str_len;
+    int n;
+    int fin;
     
 
+    fin = 0;
     FD_ZERO(&rset);
 	FD_ZERO(&allset);
     FD_SET(sockfd, &allset);
@@ -85,10 +87,23 @@ void communicate(int sockfd) {
 
         if (FD_ISSET(sockfd, &rset)) {
             memset(&msg, 0, sizeof(msg));
-            str_len = recv(sockfd, &msg, sizeof(msg), 0);
-            if (str_len == -1) {
+            n = recv(sockfd, &msg, sizeof(msg), 0);
+
+            if (n == 0) {
+                if (fin == 1) {
+                    printf("[QUIT]: Successfully disconnected!\n");
+                }
+                
+                else {
+                    printf("[QUIT]: Unexpected disconnection!\n");
+                }
+                return;
+            }
+            
+            else if (n < 0) {
                 error_handling("recv() error");
             }
+
 
             if (msg.header.type == INIT_USER) {
                 init_usr(sockfd, &usr, &msg);
@@ -139,6 +154,14 @@ void communicate(int sockfd) {
                 continue;
             }
 
+            else if (strncmp(msg.buf, "/quit", 5) == 0) {
+                printf("[QUIT]: Closing connection to the server...\n");
+                shutdown(sockfd, SHUT_WR);
+                FD_CLR(fileno(stdin), &rset);
+                fin = 1;
+                continue;
+            }
+
             else {
                 msg.header.type = MSG;
                 strcpy(msg.header.src_name, usr.name);
@@ -157,7 +180,8 @@ void help() {
     2. /w target message : Whisper a message to a target user\n \
     3. /me : Check your current username\n \
     4. /list : List all connected users\n \
-    5. /setting : Change your settings (e.g., change your username)\n\n");
+    5. /setting : Change your settings (e.g., change your username)\n \
+    6. /quit : Exit the program\n\n");
 }
 
 void init_usr(int sockfd, struct User *usr, struct Message *msg) {
