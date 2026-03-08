@@ -49,3 +49,9 @@ Start the server by specifying the port number on which it should listen:
 Connect to the server using the client application by specifying the server's IP address and port:
 
 ```./client IP PORT```
+
+### 5. Preview
+- **Global Messaging**, **Private Messaging (Whisper)**
+
+https://github.com/user-attachments/assets/b0bafe5f-f2f1-43c0-825e-0e0f5c68547a
+
